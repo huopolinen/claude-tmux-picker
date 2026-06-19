@@ -19,41 +19,25 @@ claude_tmux_picker() {
 
     local new_cmd="${CLAUDE_TMUX_NEW_CMD:-claude --dangerously-skip-permissions}"
     local default_name="${CLAUDE_TMUX_DEFAULT:-main}"
-    local here preview
+    local refresh="${CLAUDE_TMUX_REFRESH:-2}"   # seconds between live refreshes
+    local here preview list
     here=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)
     preview="${CLAUDE_TMUX_PREVIEW:-$here/tmux-session-preview.sh}"
+    list="${CLAUDE_TMUX_LIST:-$here/tmux-session-list.sh}"
 
+    # The list and previews refresh themselves every $refresh seconds: fzf's
+    # `load` event fires after each reload, so binding it to a delayed reload
+    # makes a self-perpetuating timer. --track keeps the cursor in place.
     local sel name newname
     sel=$(
-        {
-            # For each session emit:  <sortkey>\t<name>\t<annotation>
-            # sortkey 0 = waiting for you, 1 = working — so waiting floats to the top.
-            # A turn in progress shows "esc to interrupt" in Claude's status line;
-            # its absence means Claude is idle / waiting for your input (★).
-            local s att key mark
-            while IFS=$'\t' read -r s att; do
-                if tmux capture-pane -p -t "$s" 2>/dev/null | grep -q 'esc to interrupt'; then
-                    key=1; mark='· working…'
-                else
-                    key=0; mark='★ waiting for you'
-                fi
-                [ -n "$att" ] && mark="$mark  $att"
-                printf '%s\t%s\t%s\n' "$key" "$s" "$mark"
-            done < <(tmux list-sessions \
-                        -F $'#{session_name}\t#{?session_attached,(attached),}' 2>/dev/null)
-            # Action entries pinned to the bottom (sortkey 9).
-            printf '9\t__NEW__\t＋ create a NEW session\n'
-            printf '9\t__SKIP__\t✗ skip (plain shell)\n'
-        } \
-            | sort -s -t$'\t' -k1,1n \
-            | cut -f2- \
-            | fzf \
-                --delimiter='\t' --with-nth=1,2 \
-                --reverse --height='100%' \
-                --prompt='tmux > ' \
-                --header='↑/↓ move · Enter choose · Esc skip · ★ = waiting for you' \
-                --preview="'$preview' {1}" \
-                --preview-window='right:55%:wrap'
+        "$list" | fzf \
+            --delimiter='\t' --with-nth=1,2 \
+            --reverse --height='100%' --no-sort --track \
+            --prompt='tmux > ' \
+            --header="↑/↓ move · Enter choose · Esc skip · ★ waiting · live (${refresh}s)" \
+            --preview="'$preview' {1}" \
+            --preview-window='right:55%:wrap' \
+            --bind="load:reload(sleep $refresh; '$list')+refresh-preview"
     )
 
     name=${sel%%$'\t'*}

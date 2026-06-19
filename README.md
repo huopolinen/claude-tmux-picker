@@ -29,6 +29,10 @@ tmux >
 - **Flags sessions waiting for you with `★`.** A Claude turn that is still
   running shows `esc to interrupt` in its status line; when that's gone, the
   agent is idle or asking you something. Those sessions sort to the top.
+- **Refreshes itself live** (every 2s by default) — the `★` flags, the
+  ordering and the previews stay current while the menu is open, without
+  losing your place in the list. An agent that finishes a turn pops to the
+  top while you're looking at it.
 - **Create a new session** that launches Claude Code in your home directory
   (`claude --dangerously-skip-permissions` by default).
 - **Skip** to a plain shell, or just hit `Esc`.
@@ -61,7 +65,9 @@ Export these **before** the `source` line in `~/.bashrc` to override defaults:
 |---|---|---|
 | `CLAUDE_TMUX_NEW_CMD` | `claude --dangerously-skip-permissions` | command a brand-new session runs |
 | `CLAUDE_TMUX_DEFAULT` | `main` | default name offered for a new session |
+| `CLAUDE_TMUX_REFRESH` | `2` | seconds between live refreshes of the list and preview |
 | `CLAUDE_TMUX_PREVIEW` | next to the script | path to the preview helper |
+| `CLAUDE_TMUX_LIST` | next to the script | path to the list-generator helper |
 
 Example — start new sessions in a plain shell instead of Claude:
 
