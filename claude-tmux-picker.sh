@@ -51,7 +51,15 @@ claude_tmux_picker() {
             if tmux has-session -t "$newname" 2>/dev/null; then
                 tmux attach-session -t "$newname"
             else
-                tmux new-session -s "$newname" "$new_cmd"
+                local newdir
+                read -r -e -p "Start directory (default: $HOME): " newdir
+                newdir="${newdir:-$HOME}"
+                newdir="${newdir/#\~/$HOME}"   # expand a leading ~
+                if [ ! -d "$newdir" ]; then
+                    echo "No such directory: $newdir — using $HOME instead." >&2
+                    newdir="$HOME"
+                fi
+                tmux new-session -s "$newname" -c "$newdir" "$new_cmd"
             fi
             ;;
         *)

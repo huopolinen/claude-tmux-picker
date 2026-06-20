@@ -8,9 +8,10 @@ case "$name" in
         echo "＋ Create a NEW tmux session"
         echo
         echo "Runs:  ${CLAUDE_TMUX_NEW_CMD:-claude --dangerously-skip-permissions}"
-        echo "In:    $HOME"
         echo
-        echo "(you'll be asked for a name; default: ${CLAUDE_TMUX_DEFAULT:-main})"
+        echo "You'll be asked for:"
+        echo "  • a name       (default: ${CLAUDE_TMUX_DEFAULT:-main})"
+        echo "  • a directory  (default: $HOME)"
         ;;
     __SKIP__)
         echo "✗ Skip tmux"
@@ -18,9 +19,18 @@ case "$name" in
         echo "Drop straight to a plain login shell."
         ;;
     *)
-        # Show the tail end of the session's active pane.
+        # Show the tail end of the session's active pane, anchored to the
+        # bottom so the latest output/prompt is always visible. Keep the real
+        # line layout (no blank-line squeezing) so it matches the live screen;
+        # just trim trailing whitespace and any trailing blank lines, then show
+        # the last screenful that fits the preview window.
+        lines=${FZF_PREVIEW_LINES:-40}
         tmux capture-pane -p -t "$name" 2>/dev/null \
             | sed -e 's/[[:space:]]*$//' \
-            | cat -s
+            | awk '{a[NR]=$0}
+                   END{last=NR
+                       while (last>0 && a[last] ~ /^[[:space:]]*$/) last--
+                       for (i=1;i<=last;i++) print a[i]}' \
+            | tail -n "$lines"
         ;;
 esac

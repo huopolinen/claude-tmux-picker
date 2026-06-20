@@ -33,10 +33,12 @@ tmux >
   ordering and the previews stay current while the menu is open, without
   losing your place in the list. An agent that finishes a turn pops to the
   top while you're looking at it.
-- **Create a new session** that launches Claude Code in your home directory
-  (`claude --dangerously-skip-permissions` by default).
+- **Create a new session** that launches Claude Code, asking you for a name
+  and a start directory (so you can drop straight into `~/some-project`).
+  Runs `claude --dangerously-skip-permissions` by default.
 - **Skip** to a plain shell, or just hit `Esc`.
-- Arrow keys to move, type to filter, `Enter` to attach.
+- Arrow keys to move, type to filter, `Enter` to attach. The preview is
+  anchored to the bottom of each pane, so you always see the latest output.
 
 It only activates for **interactive SSH shells that aren't already inside
 tmux**, so local shells and nested panes are left alone.
