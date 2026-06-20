@@ -35,11 +35,11 @@ claude_tmux_picker() {
             --delimiter='\t' --with-nth=1,2 \
             --reverse --height='100%' --no-sort --track \
             --prompt='tmux > ' \
-            --header="↑/↓ move · Enter choose · Ctrl-X kill · Esc skip · ★ waiting · live (${refresh}s)" \
+            --header="↑/↓ move · Enter choose · ⌫ kill · Esc skip · ★ waiting · live (${refresh}s)" \
             --preview="'$preview' {1}" \
             --preview-window='right:55%:wrap' \
             --bind="load:reload(sleep $refresh; '$list')+refresh-preview" \
-            --bind="ctrl-x:execute('$kill' {1})+reload('$list')"
+            --bind="bspace:execute('$kill' {1})+reload('$list')"
     )
 
     name=${sel%%$'\t'*}

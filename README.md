@@ -11,7 +11,7 @@ This drops an `fzf` menu in front of you the moment you SSH in:
 
 ```
 tmux >
-  ↑/↓ move · Enter choose · Ctrl-X kill · Esc skip · ★ = waiting for you
+  ↑/↓ move · Enter choose · ⌫ kill · Esc skip · ★ = waiting for you
 ┌──────────────────────────────┬────────────────────────────────────────────┐
 │ landing   ★ waiting for you   │  ❯ Посмотри что там долили? Можно            │
 │ systema   ★ waiting for you   │     продолжать или ещё подождать?            │
@@ -36,8 +36,9 @@ tmux >
 - **Create a new session** that launches Claude Code, asking you for a name
   and a start directory (so you can drop straight into `~/some-project`).
   Runs `claude --dangerously-skip-permissions` by default.
-- **Kill a session you're done with** — `Ctrl-X` on the highlighted session
-  asks for confirmation, kills it, and refreshes the list.
+- **Kill a session you're done with** — `Backspace` on the highlighted session
+  asks for confirmation, kills it, and refreshes the list. (Editing the filter
+  text still works with `Ctrl-H`.)
 - **Skip** to a plain shell, or just hit `Esc`.
 - Arrow keys to move, type to filter, `Enter` to attach. The preview is
   anchored to the bottom of each pane, so you always see the latest output.
