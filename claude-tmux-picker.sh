@@ -37,7 +37,7 @@ claude_tmux_picker() {
             --prompt='tmux > ' \
             --header="↑/↓ move · Enter choose · ⌫ kill · Esc skip · ★ waiting · live (${refresh}s)" \
             --preview="'$preview' {1}" \
-            --preview-window='right:55%:wrap' \
+            --preview-window='right:55%' \
             --bind="load:reload(sleep $refresh; '$list')+refresh-preview" \
             --bind="bspace:execute('$kill' {1})+reload('$list')"
     )
