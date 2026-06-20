@@ -20,10 +20,11 @@ claude_tmux_picker() {
     local new_cmd="${CLAUDE_TMUX_NEW_CMD:-claude --dangerously-skip-permissions}"
     local default_name="${CLAUDE_TMUX_DEFAULT:-main}"
     local refresh="${CLAUDE_TMUX_REFRESH:-2}"   # seconds between live refreshes
-    local here preview list
+    local here preview list kill
     here=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)
     preview="${CLAUDE_TMUX_PREVIEW:-$here/tmux-session-preview.sh}"
     list="${CLAUDE_TMUX_LIST:-$here/tmux-session-list.sh}"
+    kill="${CLAUDE_TMUX_KILL:-$here/tmux-session-kill.sh}"
 
     # The list and previews refresh themselves every $refresh seconds: fzf's
     # `load` event fires after each reload, so binding it to a delayed reload
@@ -34,10 +35,11 @@ claude_tmux_picker() {
             --delimiter='\t' --with-nth=1,2 \
             --reverse --height='100%' --no-sort --track \
             --prompt='tmux > ' \
-            --header="↑/↓ move · Enter choose · Esc skip · ★ waiting · live (${refresh}s)" \
+            --header="↑/↓ move · Enter choose · Ctrl-X kill · Esc skip · ★ waiting · live (${refresh}s)" \
             --preview="'$preview' {1}" \
             --preview-window='right:55%:wrap' \
-            --bind="load:reload(sleep $refresh; '$list')+refresh-preview"
+            --bind="load:reload(sleep $refresh; '$list')+refresh-preview" \
+            --bind="ctrl-x:execute('$kill' {1})+reload('$list')"
     )
 
     name=${sel%%$'\t'*}
