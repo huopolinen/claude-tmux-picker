@@ -37,8 +37,9 @@ tmux >
   and a start directory (so you can drop straight into `~/some-project`).
   Runs `claude --dangerously-skip-permissions` by default.
 - **Kill a session you're done with** — `Backspace` on the highlighted session
-  asks for confirmation, kills it, and refreshes the list. (Editing the filter
-  text still works with `Ctrl-H`.)
+  asks `Kill session "name"? [y/N]`; press `y` to kill it (any other key
+  cancels), and the list refreshes. (Editing the filter text still works with
+  `Ctrl-H`.)
 - **Skip** to a plain shell, or just hit `Esc`.
 - Arrow keys to move, type to filter, `Enter` to attach. The preview is
   anchored to the bottom of each pane, so you always see the latest output.
