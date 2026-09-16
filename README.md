@@ -71,8 +71,9 @@ Export these **before** the `source` line in `~/.bashrc` to override defaults:
 |---|---|---|
 | `CLAUDE_TMUX_NEW_CMD` | `claude --dangerously-skip-permissions` | command a brand-new session runs |
 | `CLAUDE_TMUX_DEFAULT` | `main` | default name offered for a new session |
-| `CLAUDE_TMUX_START_DIR` | `$HOME` | directory a new session starts in (offered as the default) |
-| `CLAUDE_TMUX_NO_PROMPT` | `0` | `1` = create new sessions without asking for a name or directory (see below) |
+| `CLAUDE_TMUX_START_DIR` | unset | directory a new session starts in; when set, the directory is not asked (unset: asked, default `$HOME`) |
+| `CLAUDE_TMUX_NO_PROMPT` | `0` | `1` = don't ask for a name either: new sessions get `CLAUDE_TMUX_DEFAULT` (`-2`, `-3`, … if taken) |
+| `CLAUDE_TMUX_AUTO_NEW` | `0` | `1` = when no sessions exist yet, skip the menu and go straight to creating one |
 | `CLAUDE_TMUX_REFRESH` | `2` | seconds between live refreshes of the list and preview |
 | `CLAUDE_TMUX_PREVIEW` | next to the script | path to the preview helper |
 | `CLAUDE_TMUX_LIST` | next to the script | path to the list-generator helper |
@@ -85,15 +86,15 @@ export CLAUDE_TMUX_NEW_CMD=''   # empty = just a shell
 source ~/claude-tmux-picker/claude-tmux-picker.sh
 ```
 
-Example — zero questions for a team box where everyone works in one shared folder:
-`Enter` on "create a NEW session" (or logging in when no session exists at all)
-drops you straight into Claude in that folder. Extra sessions get `-2`, `-3`, … appended
-to the default name.
+Example — a team box where everyone works in one shared folder: a new session only
+asks for its name (so one person can keep several sessions for different matters), always
+starts in that folder, and logging in with no session yet goes straight to creating one.
+Add `CLAUDE_TMUX_NO_PROMPT=1` to drop the name question too (`work`, `work-2`, …).
 
 ```bash
 export CLAUDE_TMUX_DEFAULT=work
 export CLAUDE_TMUX_START_DIR=/opt/team/repo
-export CLAUDE_TMUX_NO_PROMPT=1
+export CLAUDE_TMUX_AUTO_NEW=1
 source ~/claude-tmux-picker/claude-tmux-picker.sh
 ```
 
