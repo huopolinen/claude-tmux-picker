@@ -71,6 +71,8 @@ Export these **before** the `source` line in `~/.bashrc` to override defaults:
 |---|---|---|
 | `CLAUDE_TMUX_NEW_CMD` | `claude --dangerously-skip-permissions` | command a brand-new session runs |
 | `CLAUDE_TMUX_DEFAULT` | `main` | default name offered for a new session |
+| `CLAUDE_TMUX_START_DIR` | `$HOME` | directory a new session starts in (offered as the default) |
+| `CLAUDE_TMUX_NO_PROMPT` | `0` | `1` = create new sessions without asking for a name or directory (see below) |
 | `CLAUDE_TMUX_REFRESH` | `2` | seconds between live refreshes of the list and preview |
 | `CLAUDE_TMUX_PREVIEW` | next to the script | path to the preview helper |
 | `CLAUDE_TMUX_LIST` | next to the script | path to the list-generator helper |
@@ -80,6 +82,18 @@ Example — start new sessions in a plain shell instead of Claude:
 
 ```bash
 export CLAUDE_TMUX_NEW_CMD=''   # empty = just a shell
+source ~/claude-tmux-picker/claude-tmux-picker.sh
+```
+
+Example — zero questions for a team box where everyone works in one shared folder:
+`Enter` on "create a NEW session" (or logging in when no session exists at all)
+drops you straight into Claude in that folder. Extra sessions get `-2`, `-3`, … appended
+to the default name.
+
+```bash
+export CLAUDE_TMUX_DEFAULT=work
+export CLAUDE_TMUX_START_DIR=/opt/team/repo
+export CLAUDE_TMUX_NO_PROMPT=1
 source ~/claude-tmux-picker/claude-tmux-picker.sh
 ```
 
